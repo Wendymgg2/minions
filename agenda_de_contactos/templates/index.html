@@ -1,0 +1,266 @@
+
+{% extends "base.html" %}
+
+{% block titulo %}Inicio | Agenda Minions{% endblock %}
+
+{% block contenido %}
+
+
+<section class="bienvenida">
+
+    <h2>¡Hola, pequeño Gru! 💛</h2>
+
+    <p>
+        Bienvenido al laboratorio de contactos Minions.
+    </p>
+
+    <p>
+        ¡Elige tu personaje favorito y comienza!
+    </p>
+
+</section>
+
+
+<!-- FORMULARIO PARA AGREGAR CONTACTOS -->
+
+<section class="tarjeta">
+
+    <h2>🍌 Agregar nuevo contacto</h2>
+
+    <form action="{{ url_for('agregar') }}" method="POST">
+
+        <label>Nombre:</label>
+
+        <input
+            type="text"
+            name="nombre"
+            placeholder="Escribe el nombre"
+            required
+        >
+
+
+        <label>Teléfono:</label>
+
+        <input
+            type="tel"
+            name="telefono"
+            placeholder="Escribe el teléfono"
+            required
+        >
+
+
+        <label>Correo electrónico:</label>
+
+        <input
+            type="email"
+            name="correo"
+            placeholder="correo@ejemplo.com"
+        >
+
+
+        <label>Categoría:</label>
+
+        <select name="categoria" required>
+
+            <option value="Familia">👨‍👩‍👧 Familia</option>
+
+            <option value="Escuela">🎒 Escuela</option>
+
+            <option value="Trabajo">💼 Trabajo</option>
+
+            <option value="Otro">🍌 Otro</option>
+
+        </select>
+
+
+        <!-- SELECCION DE AVATAR -->
+
+        <label>💛 Elige tu avatar Minion:</label>
+
+        <select name="avatar" id="avatar" required>
+
+            <option value="Edith">Edith</option>
+
+            <option value="lucy">Lucy</option>
+
+            <option value="bob">Bob</option>
+
+            <option value="Margo">Margo</option>
+
+            <option value="gru">Gru</option>
+
+            <option value="Agnes">Agnes</option>
+
+        </select>
+
+
+        <!-- VISTA PREVIA DEL AVATAR -->
+
+        <div class="vista-avatar">
+
+            <img
+                id="preview-avatar"
+                src="{{ url_for('static', filename='avatars/Agnes.png') }}"
+                alt="Avatar seleccionado"
+            >
+
+            <h3>¡Este será tu compañero!</h3>
+
+            <p>Selecciona otro personaje para cambiarlo.</p>
+
+        </div>
+
+
+        <button type="submit" class="boton-agregar">
+
+            🍌 ¡Guardar contacto!
+
+        </button>
+
+    </form>
+
+</section>
+
+
+<!-- LISTA DE CONTACTOS -->
+
+<section class="tarjeta">
+
+    <h2>💙 Mis contactos Minions</h2>
+
+    {% if contactos %}
+
+    <div class="tabla-contenedor">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Avatar</th>
+
+                    <th>Nombre</th>
+
+                    <th>Teléfono</th>
+
+                    <th>Correo</th>
+
+                    <th>Categoría</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for contacto in contactos %}
+
+                <tr>
+
+                    <td>
+
+                        <img
+                            src="{{ url_for('static', filename='avatars/' + contacto.avatar + '.png') }}"
+                            class="avatar-contacto"
+                            alt="Avatar de {{ contacto.nombre }}"
+                        >
+
+                    </td>
+
+
+                    <td>{{ contacto.nombre }}</td>
+
+
+                    <td>{{ contacto.telefono }}</td>
+
+
+                    <td>
+                        {{ contacto.correo or 'Sin correo' }}
+                    </td>
+
+
+                    <td>
+
+                        <span class="categoria">
+
+                            {{ contacto.categoria }}
+
+                        </span>
+
+                    </td>
+
+
+                    <td class="acciones">
+
+                        <a
+                            href="{{ url_for('editar', id=contacto.id) }}"
+                            class="boton-editar"
+                        >
+                            ✏️ Editar
+                        </a>
+
+
+                        <form
+                            action="{{ url_for('eliminar', id=contacto.id) }}"
+                            method="POST"
+                            onsubmit="return confirm('¿Seguro que quieres eliminar este contacto?');"
+                        >
+
+                            <button
+                                type="submit"
+                                class="boton-eliminar"
+                            >
+                                🗑️ Eliminar
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+        <div class="sin-contactos">
+
+            <h3>¡Oh no! Todavía no tienes contactos.</h3>
+
+            <p>Agrega tu primer amigo Minion 🍌</p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- SCRIPT PARA CAMBIAR EL AVATAR -->
+
+<script>
+
+const selector = document.getElementById("avatar");
+
+const imagen = document.getElementById("preview-avatar");
+
+selector.addEventListener("change", function() {
+
+    imagen.src = "{{ url_for('static', filename='avatars/') }}" + this.value + ".png";
+
+});
+
+</script>
+
+
+{% endblock %}

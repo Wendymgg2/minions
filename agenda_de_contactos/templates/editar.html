@@ -1,0 +1,131 @@
+
+{% extends "base.html" %}
+
+{% block titulo %}Editar contacto | Minions{% endblock %}
+
+{% block contenido %}
+
+<section class="tarjeta editar-tarjeta">
+
+    <h2>💛 Editar contacto</h2>
+
+    <p>¡Vamos a actualizar la información de tu Minion!</p>
+
+
+    <form method="POST">
+
+        <label>Nombre:</label>
+
+        <input
+            type="text"
+            name="nombre"
+            value="{{ contacto.nombre }}"
+            required
+        >
+
+
+        <label>Teléfono:</label>
+
+        <input
+            type="tel"
+            name="telefono"
+            value="{{ contacto.telefono }}"
+            required
+        >
+
+
+        <label>Correo electrónico:</label>
+
+        <input
+            type="email"
+            name="correo"
+            value="{{ contacto.correo or '' }}"
+        >
+
+
+        <label>Categoría:</label>
+
+        <select name="categoria" required>
+
+            {% for categoria in ['Familia', 'Escuela', 'Trabajo', 'Otro'] %}
+
+                <option
+                    value="{{ categoria }}"
+                    {% if contacto.categoria == categoria %}selected{% endif %}
+                >
+
+                    {{ categoria }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>🍌 Cambiar avatar:</label>
+
+        <select name="avatar" id="avatar" required>
+
+            {% for personaje in ['kevin', 'stuart', 'bob', 'otto', 'gru', 'agnes'] %}
+
+                <option
+                    value="{{ personaje }}"
+                    {% if contacto.avatar == personaje %}selected{% endif %}
+                >
+
+                    {{ personaje.capitalize() }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <div class="vista-avatar">
+
+            <img
+                id="preview-avatar"
+                src="{{ url_for('static', filename='avatars/' + contacto.avatar + '.png') }}"
+                alt="Avatar actual"
+            >
+
+            <h3>¡Tu compañero Minion!</h3>
+
+        </div>
+
+
+        <button type="submit" class="boton-agregar">
+
+            💙 Guardar cambios
+
+        </button>
+
+
+        <a href="{{ url_for('inicio') }}" class="boton-volver">
+
+            Volver a la agenda
+
+        </a>
+
+    </form>
+
+</section>
+
+
+<script>
+
+const selector = document.getElementById("avatar");
+
+const imagen = document.getElementById("preview-avatar");
+
+selector.addEventListener("change", function() {
+
+    imagen.src = "{{ url_for('static', filename='avatars/') }}" + this.value + ".png";
+
+});
+
+</script>
+
+{% endblock %}
